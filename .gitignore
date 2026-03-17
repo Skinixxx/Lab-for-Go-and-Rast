@@ -1,0 +1,53 @@
+# --- Go ---
+/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go workspaces (optional)
+go.work
+go.work.sum
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# --- Logs / temp ---
+*.log
+*.tmp
+
+# --- Secrets (keep local) ---
+.env
+.env.*
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+
+# VS Code (keep settings, ignore workspace noise)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+GO_CHEATSHEET.md
+example_PROMT_LOG.md
