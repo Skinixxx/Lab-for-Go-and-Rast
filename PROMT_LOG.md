@@ -53,8 +53,16 @@
 **Инструмент:** Cursor AI Agent (GPT-5.2)
 **Промпт:** "Меня все устраивает реализовываем"
 **Результат:** Установлен `maturin` в venv, создан проект `mid/maturin_task` (PyO3). Реализованы функции `sum_as_string`, `add`, `greet` в Rust (`src/lib.rs`), собран и установлен модуль через `maturin develop`, проверено `import fastmath` и вызов функций из Python. Добавлен `mid/maturin_task/README.md`.
+### Промпт 3
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "Давай теперь сделаем юнит-тесты"
+**Результат:** Добавлены unit-тесты на Rust и Python: в `src/lib.rs` вынесены чистые функции `*_impl` и добавлены `cargo test`; в `python/tests/` добавлены/обновлены тесты на `unittest` (`test_all.py`, `test_fastmath_unittest.py`). Проверено: `cargo test` и `python -m unittest discover -s mid/maturin_task/python/tests` проходят.
+### Промпт 4
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "Проведи рефакторинг кода"
+**Результат:** Рефакторинг без изменения API: в `src/lib.rs` сделана более идиоматичная структура PyO3 (`#[pymodule] fn fastmath(...)` + `#[pyfunction]` на верхнем уровне), при этом сохранены функции `sum_as_string`, `add`, `greet`. В Python-тестах убран дубликат `test_all.py`, оставлен единый `unittest`-набор. Проверено: `cargo test` и `python -m unittest discover -s mid/maturin_task/python/tests` проходят.
 ### Итого
-- Количество промптов: 2
-- Что пришлось исправлять вручную: —
-- Время: —
+- Количество промптов: 4
+- Что пришлось исправлять вручную: ничего
+- Время: ~15–25 мин
 
