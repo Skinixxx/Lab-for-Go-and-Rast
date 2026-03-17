@@ -37,3 +37,19 @@ cd mid/fourth_task
 python client.py PING "ECHO hi" QUIT
 ```
 
+### Тесты
+
+Go:
+
+```bash
+cd mid/fourth_task
+go test ./...
+```
+
+Python:
+
+```bash
+cd mid/fourth_task
+python -m unittest
+```
+

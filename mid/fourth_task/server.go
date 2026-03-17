@@ -2,13 +2,16 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"flag"
 	"fmt"
 	"log"
 	"net"
-	"strings"
 	"time"
+)
+
+const (
+	readTimeout  = 30 * time.Second
+	writeTimeout = 5 * time.Second
 )
 
 func main() {
@@ -41,28 +44,12 @@ func handleConn(conn net.Conn) {
 	defer log.Printf("disconnected: %s", remote)
 
 	sc := bufio.NewScanner(conn)
+	sc.Buffer(make([]byte, 0, 64*1024), 1024*1024)
 	for sc.Scan() {
-		_ = conn.SetWriteDeadline(time.Now().Add(5 * time.Second))
+		_ = conn.SetReadDeadline(time.Now().Add(readTimeout))
+		_ = conn.SetWriteDeadline(time.Now().Add(writeTimeout))
 
-		line := strings.TrimSpace(sc.Text())
-		if line == "" {
-			if _, err := fmt.Fprintln(conn, "ERR empty"); err != nil {
-				return
-			}
-			continue
-		}
-
-		resp, closeConn, err := processLine(line)
-		if err != nil {
-			if _, werr := fmt.Fprintf(conn, "ERR %s\n", err.Error()); werr != nil {
-				return
-			}
-			if closeConn {
-				return
-			}
-			continue
-		}
-
+		resp, closeConn, _ := processLine(sc.Text())
 		if _, err := fmt.Fprintln(conn, resp); err != nil {
 			return
 		}
@@ -73,21 +60,6 @@ func handleConn(conn net.Conn) {
 
 	if err := sc.Err(); err != nil {
 		log.Printf("read %s: %v", remote, err)
-	}
-}
-
-func processLine(line string) (resp string, closeConn bool, err error) {
-	upper := strings.ToUpper(line)
-	switch {
-	case upper == "PING":
-		return "PONG", false, nil
-	case upper == "QUIT":
-		return "BYE", true, nil
-	case strings.HasPrefix(upper, "ECHO "):
-		// preserve original case after "ECHO "
-		return "ECHO: " + line[5:], false, nil
-	default:
-		return "", false, errors.New("unknown command (use PING, ECHO <text>, QUIT)")
 	}
 }
 

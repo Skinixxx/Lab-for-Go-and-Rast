@@ -1,6 +1,7 @@
 import argparse
 import socket
 from dataclasses import dataclass
+from typing import BinaryIO
 
 
 @dataclass(frozen=True)
@@ -9,13 +10,15 @@ class Reply:
     received: str
 
 
+def _ensure_newline(line: str) -> str:
+    return line if line.endswith("\n") else line + "\n"
+
+
 def send_line(sock: socket.socket, line: str) -> None:
-    if not line.endswith("\n"):
-        line += "\n"
-    sock.sendall(line.encode("utf-8"))
+    sock.sendall(_ensure_newline(line).encode("utf-8"))
 
 
-def read_line(sock_file) -> str:
+def read_line(sock_file: BinaryIO) -> str:
     data = sock_file.readline()
     if data == b"":
         raise ConnectionError("server closed connection")
