@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 func TestGreet_OK(t *testing.T) {
 	got, err := greet("Alice")
@@ -21,8 +24,8 @@ func TestGreet_EmptyName(t *testing.T) {
 	if got != "" {
 		t.Fatalf("expected empty output, got %q", got)
 	}
-	if err.Error() != "error: --name must not be empty" {
-		t.Fatalf("unexpected error message: %q", err.Error())
+	if !errors.Is(err, ErrEmptyName) {
+		t.Fatalf("expected ErrEmptyName, got %v", err)
 	}
 }
 

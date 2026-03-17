@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -12,7 +13,11 @@ func main() {
 
 	out, err := greet(*name)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
+		if errors.Is(err, ErrEmptyName) {
+			fmt.Fprintln(os.Stderr, "error: --name must not be empty")
+		} else {
+			fmt.Fprintln(os.Stderr, err.Error())
+		}
 		os.Exit(2)
 	}
 

@@ -16,7 +16,8 @@ go build -o bin/hello .
 ### Запуск бинаря напрямую
 
 ```bash
-./mid/third_task/bin/hello --name Alice
+cd mid/third_task
+./bin/hello --name Alice
 ```
 
 ### Запуск из Python (subprocess)
