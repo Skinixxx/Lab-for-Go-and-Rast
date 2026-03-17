@@ -12,7 +12,7 @@ HELLO_BIN = BIN_DIR / "hello"
 def build_go_binary() -> None:
     BIN_DIR.mkdir(exist_ok=True)
     subprocess.run(
-        ["go", "build", "-o", str(HELLO_BIN), "./cmd/hello"],
+        ["go", "build", "-o", str(HELLO_BIN), "."],
         cwd=str(ROOT),
         check=True,
         text=True,

@@ -7,11 +7,14 @@ import (
 )
 
 func main() {
-	name := flag.String("name", "world", "why to greet")
+	name := flag.String("name", "world", "who to greet")
 	flag.Parse()
-	if *name == "" {
-		fmt.Fprintln(os.Stderr, "error: --name must not be empty")
+
+	out, err := greet(*name)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(2)
 	}
-	fmt.Printf("hello, %s\n", *name)
+
+	fmt.Print(out)
 }
