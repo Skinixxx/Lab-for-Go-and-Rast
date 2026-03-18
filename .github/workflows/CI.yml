@@ -31,7 +31,7 @@ jobs:
       - name: Run tests
         run: |
           cd hard/cicd_rust_ci_cd
-          pytest tests/ -v
+          pytest python/tests/ -v
 
   build-wheels:
     runs-on: ${{ matrix.os }}
