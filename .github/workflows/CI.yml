@@ -81,6 +81,17 @@ jobs:
         run: |
           cd hard/cicd_rust_ci_cd
           pytest tests/ -v
+
+          steps:
+      - uses: actions/checkout@v4
+    
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+    
+      - name: Install base dependencies
+        run: pacman -Sy --noconfirm python python-pip rust cargo
   # --------------------------------------------
   # Job 2: Сборка wheels для разных платформ
   # --------------------------------------------
