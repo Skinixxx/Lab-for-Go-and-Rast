@@ -37,25 +37,31 @@ jobs:
       # Клонирование репозитория
       - uses: actions/checkout@v4
 
-      # Копируем файлы проекта в корень
-      # чтобы maturin мог найти Cargo.toml внутри Docker контейнера
-      - name: Prepare build directory
-        run: cp -r hard/cicd_rust_ci_cd/. .
-
-      # Сборка wheel-пакетов
-      # manylinux: auto = совместимость со всеми Linux-дистрибутивами
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
+      # Установка Python 3.12 (фиксируем версию чтобы избежать проблем с 3.14)
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          args: --release --out dist
-          manylinux: auto
+          python-version: "3.12"
+
+      # Установка maturin напрямую без Docker
+      - name: Install maturin
+        run: pip install maturin
+
+      # Сборка wheel-пакетов напрямую без manylinux Docker контейнера
+      # PYO3_USE_ABI3_FORWARD_COMPATIBILITY нужен для совместимости с Python 3.14+
+      - name: Build wheels
+        run: |
+          cd hard/cicd_rust_ci_cd
+          maturin build --release --out dist
+        env:
+          PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1"
 
       # Загрузка артефактов для следующих job'ов
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
           name: wheels
-          path: dist
+          path: hard/cicd_rust_ci_cd/dist
 
   # --------------------------------------------
   # Job 2: Публикация на TestPyPI
