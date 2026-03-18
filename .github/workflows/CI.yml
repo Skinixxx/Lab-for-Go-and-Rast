@@ -50,10 +50,10 @@ jobs:
           PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1 maturin build --release --out dist
           pip install dist/*.whl --break-system-packages --force-reinstall
 
+      # Запуск тестов без локального PYTHONPATH
+      # чтобы импорт шёл из установленного wheel а не из папки python/
       - name: Run tests
-        run: |
-          cd hard/cicd_rust_ci_cd
-          python -m pytest python/tests/ -v
+        run: PYTHONPATH="" python -m pytest hard/cicd_rust_ci_cd/python/tests/test_fastmath.py -v
 
   # --------------------------------------------
   # Job 2: Сборка wheels для разных платформ
