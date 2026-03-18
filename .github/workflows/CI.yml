@@ -19,25 +19,8 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Cache pip packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('hard/cicd_rust_ci_cd/pyproject.toml') }}
-          restore-keys: ${{ runner.os }}-pip-
-
       - name: Install maturin and pytest
         run: pip install maturin pytest --break-system-packages
-
-      - name: Cache cargo registry
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            ~/.cargo/git/db
-          key: ${{ runner.os }}-cargo-${{ hashFiles('hard/cicd_rust_ci_cd/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-cargo-
 
       - name: Build and install
         run: |
@@ -58,22 +41,32 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64
+            python: "3.12"
           - os: ubuntu-latest
             target: aarch64
+            python: "3.12"
           - os: windows-latest
             target: x64
+            python: "3.12"
           - os: macos-latest
             target: x86_64
+            python: "3.12"
           - os: macos-latest
             target: aarch64
+            python: "3.12"
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist
+          args: --release --out dist -i python${{ matrix.python }}
           sccache: "true"
           working-directory: hard/cicd_rust_ci_cd
 
