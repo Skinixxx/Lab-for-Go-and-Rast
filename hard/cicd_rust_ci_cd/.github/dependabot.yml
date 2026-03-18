@@ -1,0 +1,69 @@
+# ============================================
+# Конфигурация Dependabot
+# ============================================
+# Dependabot автоматически проверяет обновления зависимостей
+# и создаёт PR с новыми версиями
+# ============================================
+
+version: 2
+
+updates:
+  # --------------------------------------------
+  # Обновление GitHub Actions
+  # --------------------------------------------
+  - package-ecosystem: "github-actions"
+    # Проверять workflow-файлы
+    directory: "/"
+    schedule:
+      # Проверять раз в неделю (по понедельникам)
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    # Автогруппировка patch-версий
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+  # --------------------------------------------
+  # Обновление Python зависимостей
+  # --------------------------------------------
+  - package-ecosystem: "pip"
+    # Проверять pyproject.toml и requirements.txt
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "python"
+    # Обновлять только direct dependencies
+    allow:
+      - dependency-type: "direct"
+    # Игнорировать dev-зависимости (pytest и т.д.)
+    ignore:
+      - dependency-name: "pytest"
+        update-types: ["version-update:semver-patch"]
+
+  # --------------------------------------------
+  # Обновление Rust крейтов
+  # --------------------------------------------
+  - package-ecosystem: "cargo"
+    # Проверять Cargo.toml
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "rust"
+    # Обновлять patch и minor версии сразу
+    commit-message:
+      prefix: "rust"
+    # Группировать обновления pyo3-*
+    groups:
+      pyo3:
+        patterns:
+          - "pyo3*"

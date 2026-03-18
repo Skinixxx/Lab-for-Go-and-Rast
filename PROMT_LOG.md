@@ -118,3 +118,12 @@
 **Промпт:** "Кстати а где наш Rust-модуль? давай реализуем новый минимальный модуль"
 **Результат:** Создан минимальный Rust-модуль в `hard/cicd_rust_ci_cd/`: `pyproject.toml` (maturin build-system), `Cargo.toml` (pyo3 0.22), `src/lib.rs` (функции `add`, `multiply`, `greet`), `python/fastmath/__init__.py`, `python/tests/test_fastmath.py`. Собран с `PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1` (Arch Python 3.14). pytest проходит: 3 теста.
 
+### Промпт 9
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "Так я вручную проверил все работает давай dependabot и кэширование реализуем"
+**Результат:**
+- Создан `.github/dependabot.yml` — автообновление GitHub Actions, pip и cargo зависимостей (проверка раз в неделю)
+- Обновлён `CI.yml` — добавлено кэширование pip packages, cargo registry (job test) и sccache (job build-wheels)
+- Обновлён README — добавлены секции Dependabot и Кэширование
+- yamllint проходит
+

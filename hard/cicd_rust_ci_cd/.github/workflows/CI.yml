@@ -42,9 +42,34 @@ jobs:
       # Клонирование репозитория
       - uses: actions/checkout@v6
 
+      # Кэширование pip-пакетов
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          # Путь к pip-кэшу в Arch
+          path: ~/.cache/pip
+          # Ключ зависит от зависимостях в pyproject.toml
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+          # Восстановить из любой версии с тем же Python/OS
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       # Установка maturin и pytest через pip
       - name: Install maturin
         run: pip install maturin pytest
+
+      # Кэширование Rust-компиляции (target directory)
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+          # Ключ зависит от lock-файла
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
 
       # Сборка и установка модуля
       - name: Build and install
@@ -87,6 +112,7 @@ jobs:
       - uses: actions/checkout@v6
 
       # Сборка wheel через официальное действие PyO3
+      # sccache включен для ускорения повторных сборок
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -95,6 +121,7 @@ jobs:
           # Аргументы: --release = оптимизированная сборка, --out dist = выходная папка
           args: --release --out dist
           # Включить sccache для ускорения повторных сборок
+          # sccache кэширует результаты компиляции Rust
           sccache: "true"
 
       # Загрузка собранных wheel-файлов как артефактов
