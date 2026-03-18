@@ -17,10 +17,10 @@ jobs:
       - name: Install base dependencies
         run: pacman -Sy --noconfirm python python-pip rust cargo git
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Cache pip packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('hard/cicd_rust_ci_cd/pyproject.toml') }}
@@ -30,7 +30,7 @@ jobs:
         run: pip install maturin pytest --break-system-packages
 
       - name: Cache cargo registry
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry/index
@@ -67,7 +67,7 @@ jobs:
           - os: macos-latest
             target: aarch64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -78,7 +78,7 @@ jobs:
           working-directory: hard/cicd_rust_ci_cd
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ matrix.os }}-${{ matrix.target }}
           path: hard/cicd_rust_ci_cd/dist

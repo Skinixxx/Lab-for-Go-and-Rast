@@ -54,7 +54,7 @@ jobs:
 
       # Загрузка артефактов (wheels) для следующих job'ов
       - name: Upload wheels
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           # Имя артефакта (одинаковое для всех)
           name: wheels
@@ -72,7 +72,7 @@ jobs:
     needs: build
     steps:
       # Скачивание артефактов из job 'build'
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v8
         with:
           name: wheels
           path: dist
@@ -103,7 +103,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && github.event.inputs.test_only != 'true'
     steps:
       # Скачивание артефактов
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v8
         with:
           name: wheels
           path: dist
