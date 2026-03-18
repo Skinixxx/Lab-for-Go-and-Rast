@@ -64,4 +64,4 @@ jobs:
 
       # Запуск yamllint на директорию workflow'ов
       - name: Run yamllint
-        run: yamllint .github/workflows/
+        run: yamllint -c .github/.yamllint.yml .github/workflows/
