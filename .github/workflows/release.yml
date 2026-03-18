@@ -38,16 +38,16 @@ jobs:
       - uses: actions/checkout@v4
 
       # Сборка wheel-пакетов
-      # --manifest-path указывает путь к Cargo.toml явно
+      # before-script-linux копирует файлы проекта в корень контейнера
+      # чтобы maturin мог найти Cargo.toml внутри Docker
       # manylinux: auto = совместимость со всеми Linux-дистрибутивами
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          args: >-
-            --release
-            --out dist
-            --manifest-path hard/cicd_rust_ci_cd/Cargo.toml
+          args: --release --out dist
           manylinux: auto
+          before-script-linux: |
+            cp -r hard/cicd_rust_ci_cd/. .
 
       # Загрузка артефактов для следующих job'ов
       - name: Upload wheels
