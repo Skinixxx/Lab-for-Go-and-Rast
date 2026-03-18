@@ -123,6 +123,7 @@ jobs:
           # Включить sccache для ускорения повторных сборок
           # sccache кэширует результаты компиляции Rust
           sccache: "true"
+          working-directory: hard/cicd_rust_ci_cd
 
       # Загрузка собранных wheel-файлов как артефактов
       - name: Upload wheels

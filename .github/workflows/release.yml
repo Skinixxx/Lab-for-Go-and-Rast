@@ -50,6 +50,7 @@ jobs:
           # manylinux: auto = совместимость со всеми Linux-дистрибутивами
           # (автоматически выбирает подходящий manylinux образ)
           manylinux: auto
+          working-directory: hard/cicd_rust_ci_cd
 
       # Загрузка артефактов (wheels) для следующих job'ов
       - name: Upload wheels
