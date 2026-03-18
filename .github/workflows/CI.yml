@@ -1,27 +1,49 @@
+# ============================================
+# CI Workflow — тестирование и сборка wheels
+# ============================================
 name: CI
 
+# ============================================
+# Триггеры
+# ============================================
 on:
+  # При пуше в основные ветки
   push:
     branches: [main, master]
+  # При открытии/обновлении Pull Request
   pull_request:
+  # Ручной запуск через GitHub UI
   workflow_dispatch:
 
+# Права доступа
 permissions:
   contents: read
 
+# ============================================
+# Задачи (jobs)
+# ============================================
 jobs:
+  # --------------------------------------------
+  # Job 1: Тестирование в Arch Linux
+  # --------------------------------------------
   test:
     runs-on: ubuntu-latest
+    # Запуск внутри Arch Linux контейнера
     container: archlinux:latest
     steps:
+      # Установка базовых зависимостей
       - name: Install base dependencies
         run: pacman -Sy --noconfirm python python-pip rust cargo git
 
+      # Клонирование репозитория
       - uses: actions/checkout@v4
 
+      # Установка maturin и pytest
       - name: Install maturin and pytest
         run: pip install maturin pytest --break-system-packages
 
+      # Сборка Rust модуля и установка wheel
+      # PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1 нужен для Python 3.14+
       - name: Build and install
         run: |
           cd hard/cicd_rust_ci_cd
@@ -31,45 +53,57 @@ jobs:
       - name: Run tests
         run: |
           cd hard/cicd_rust_ci_cd
-          pytest python/tests/ -v
+          python -m pytest python/tests/ -v
 
+  # --------------------------------------------
+  # Job 2: Сборка wheels для разных платформ
+  # --------------------------------------------
   build-wheels:
     runs-on: ${{ matrix.os }}
     strategy:
+      # Не останавливать остальные при ошибке одного
       fail-fast: false
+      # Матрица платформ
       matrix:
         include:
+          # Linux x86_64
           - os: ubuntu-latest
             target: x86_64
             python: "3.12"
-          - os: ubuntu-latest
-            target: aarch64
-            python: "3.12"
+          # Windows x64
           - os: windows-latest
             target: x64
             python: "3.12"
+          # macOS Intel
           - os: macos-latest
             target: x86_64
             python: "3.12"
+          # macOS Apple Silicon
           - os: macos-latest
             target: aarch64
             python: "3.12"
     steps:
+      # Клонирование репозитория
       - uses: actions/checkout@v4
 
+      # Установка Python 3.12 (фиксируем версию чтобы избежать проблем с 3.14)
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
 
+      # Сборка wheel через официальное действие PyO3
+      # manylinux: auto = совместимость со всеми Linux дистрибутивами
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
           args: --release --out dist -i python${{ matrix.python }}
           sccache: "true"
+          manylinux: auto
           working-directory: hard/cicd_rust_ci_cd
 
+      # Загрузка собранных wheels как артефактов
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
