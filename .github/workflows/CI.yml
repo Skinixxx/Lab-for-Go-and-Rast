@@ -71,14 +71,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
-      # Сборка и установка модуля
       - name: Build and install
-        run: maturin develop --release
+        run: |
+          cd hard/cicd_rust_ci_cd
+          maturin build --release --out dist
+          pip install dist/*.whl --break-system-packages
 
-      # Запуск Python-тестов
       - name: Run tests
-        run: pytest ../../hard/cicd_rust_ci_cd/python/tests/ -v
-
+        run: |
+          cd hard/cicd_rust_ci_cd
+          pytest tests/ -v
   # --------------------------------------------
   # Job 2: Сборка wheels для разных платформ
   # --------------------------------------------
