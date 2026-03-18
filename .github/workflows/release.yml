@@ -48,7 +48,7 @@ jobs:
         run: pip install maturin
 
       # Сборка wheel-пакетов напрямую без manylinux Docker контейнера
-      # PYO3_USE_ABI3_FORWARD_COMPATIBILITY нужен для совместимости с Python 3.14+
+      # PYO3_USE_ABI3_FORWARD_COMPATIBILITY нужен для совместимости
       - name: Build wheels
         run: |
           cd hard/cicd_rust_ci_cd
@@ -78,16 +78,18 @@ jobs:
           name: wheels
           path: dist
 
-      # Публикация на TestPyPI
+      # Установка twine для публикации
+      - name: Install twine
+        run: pip install twine
+
+      # Публикация на TestPyPI через twine
       # --skip-existing = не падать если версия уже есть
       - name: Publish to TestPyPI
-        uses: PyO3/maturin-action@v1
-        with:
-          command: publish
-          args: --repository testpypi --skip-existing
+        run: twine upload --repository testpypi dist/* --skip-existing
         env:
           # Токен хранится в GitHub → Settings → Secrets → PYPI_TEST_API_TOKEN
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TEST_API_TOKEN }}
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TEST_API_TOKEN }}
 
   # --------------------------------------------
   # Job 3: Публикация на PyPI (продакшн)
@@ -109,13 +111,15 @@ jobs:
           name: wheels
           path: dist
 
-      # Публикация на основной PyPI
+      # Установка twine для публикации
+      - name: Install twine
+        run: pip install twine
+
+      # Публикация на основной PyPI через twine
       # --skip-existing = пропустить если версия уже опубликована
       - name: Publish to PyPI
-        uses: PyO3/maturin-action@v1
-        with:
-          command: publish
-          args: --skip-existing
+        run: twine upload dist/* --skip-existing
         env:
           # Токен хранится в GitHub → Settings → Secrets → PYPI_API_TOKEN
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
