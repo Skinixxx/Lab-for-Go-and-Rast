@@ -1,3 +1,3 @@
-from .fastmath import add, multiply, greet
+from fastmath import add, multiply, greet
 
 __all__ = ["add", "multiply", "greet"]
