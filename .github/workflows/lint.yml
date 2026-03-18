@@ -38,10 +38,8 @@ jobs:
       # Скачивание и установка actionlint
       # actionlint — линтер для GitHub Actions workflow-файлов
       # Проверяет: синтаксис, существование action'ов, переменные, secrets
-      - name: Download actionlint
-        run: |
-          bash <(curl -s https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
-          actionlint -version
+      - name: Run actionlint
+        uses: raven-actions/actionlint@v2
 
       # Запуск actionlint
       # Находит ошибки: несуществующие actions, опечатки в переменных,

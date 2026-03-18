@@ -32,7 +32,6 @@ jobs:
     steps:
       # Клонирование репозитория
       - uses: actions/checkout@v4
-
       # Запуск actionlint через готовый action
       # raven-actions/actionlint автоматически устанавливает
       # actionlint и добавляет его в PATH — без ручного скачивания
@@ -47,12 +46,10 @@ jobs:
     steps:
       # Клонирование репозитория
       - uses: actions/checkout@v4
-
       # Установка yamllint через pip
       # yamllint проверяет отступы, переносы строк, синтаксис YAML
       - name: Install yamllint
         run: pip install yamllint
-
       # Запуск yamllint на все workflow-файлы
       - name: Run yamllint
         run: yamllint .github/workflows/
