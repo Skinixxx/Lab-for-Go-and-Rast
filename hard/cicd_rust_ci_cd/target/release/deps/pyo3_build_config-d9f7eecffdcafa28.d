@@ -1,0 +1,14 @@
+/home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/deps/pyo3_build_config-d9f7eecffdcafa28.d: /home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/lib.rs /home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/errors.rs /home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/impl_.rs /home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/build/pyo3-build-config-ae770373ef0cda0c/out/pyo3-build-config-file.txt /home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/build/pyo3-build-config-ae770373ef0cda0c/out/pyo3-build-config.txt
+
+/home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/deps/libpyo3_build_config-d9f7eecffdcafa28.rlib: /home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/lib.rs /home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/errors.rs /home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/impl_.rs /home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/build/pyo3-build-config-ae770373ef0cda0c/out/pyo3-build-config-file.txt /home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/build/pyo3-build-config-ae770373ef0cda0c/out/pyo3-build-config.txt
+
+/home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/deps/libpyo3_build_config-d9f7eecffdcafa28.rmeta: /home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/lib.rs /home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/errors.rs /home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/impl_.rs /home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/build/pyo3-build-config-ae770373ef0cda0c/out/pyo3-build-config-file.txt /home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/build/pyo3-build-config-ae770373ef0cda0c/out/pyo3-build-config.txt
+
+/home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/lib.rs:
+/home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/errors.rs:
+/home/apollo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.22.6/src/impl_.rs:
+/home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/build/pyo3-build-config-ae770373ef0cda0c/out/pyo3-build-config-file.txt:
+/home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/build/pyo3-build-config-ae770373ef0cda0c/out/pyo3-build-config.txt:
+
+# env-dep:CARGO_PKG_VERSION=0.22.6
+# env-dep:OUT_DIR=/home/apollo/cimlov-laba-1/hard/cicd_rust_ci_cd/target/release/build/pyo3-build-config-ae770373ef0cda0c/out

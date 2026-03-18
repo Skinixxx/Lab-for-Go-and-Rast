@@ -1,5 +1,5 @@
 # Prompt Log
-## Задание 1: Go → бинарь → вызов из Python (subprocess)
+## Задание M3: Go → бинарь → вызов из Python (subprocess)
 ### Промпт 1
 **Инструмент:** Cursor AI Agent (GPT-5.2)
 **Промпт:** "Скомпилировать Go-программу в бинарь и вызвать её из Python (subprocess). Объясни как сделать, что использовать, и напиши код-примеры."
@@ -15,10 +15,10 @@
 ### Итого
 - Количество промптов: 3
 - Что пришлось исправлять вручную: ничего
-- Время: ~20 мин
+- Время: ~30-45 мин
 
 ---
-## Задание 2: Go TCP-сервер + Python TCP-клиент
+## Задание M5: Go TCP-сервер + Python TCP-клиент
 ### Промпт 1
 **Инструмент:** Cursor AI Agent (GPT-5.2)
 **Промпт:** "Реализовать на Go простой TCP-сервер, к которому подключается Python-клиент. Давай составим сперва план реализации"
@@ -44,7 +44,7 @@
 - Время: ~30 мин
 
 ---
-## Задание 3: Maturin (Rust) модуль → импорт в Python
+## Задание M8: Maturin (Rust) модуль → импорт в Python
 ### Промпт 1
 **Инструмент:** Cursor AI Agent (GPT-5.2)
 **Промпт:** "Следующее наше задание 8. Собрать модуль с Maturin и импортировать в Python. Давай проведем планирование"
@@ -65,4 +65,56 @@
 - Количество промптов: 4
 - Что пришлось исправлять вручную: ничего
 - Время: ~15–25 мин
+
+---
+
+## Задание B3: CI/CD для Rust-модуля + публикация на PyPI
+### Промпт 1
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "Настроить сборку Rust-модуля в CI/CD и публикацию на PyPI. Давай спланируем наши действия, накидай идеи и способы реализации."
+**Результат:** Составлен план реализации:
+- **Workflow 1: `ci.yml`** — на push/PR: matrix build (linux/macos/windows), шаги checkout/setup-python/install-rust/maturin build/upload artifacts, job test: maturin develop + pytest
+- **Workflow 2: `release.yml`** — на тег `v*`: job testpypi (maturin publish --repository testpypi), job pypi (maturin publish, только с main)
+- **Secrets:** PYPI_TEST_API_TOKEN, PYPI_API_TOKEN
+- **Реестры:** TestPyPI + PyPI; артефакты: только wheel
+
+### Промпт 2
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "Давай приступим к реализации"
+**Результат:** 
+- Восстановлен `mid/maturin_task/.github/workflows/CI.yml` (оригинальный автогенерированный maturin) и `pyproject.toml` (dynamic version)
+- Создан `hard/cicd_rust_ci_cd/` с базовой реализацией:
+  - `.github/workflows/CI.yml` — job `test` (maturin develop + pytest), job `build-wheels` (ubuntu/windows/macos)
+  - `.github/workflows/release.yml` — build → test-publish (TestPyPI) → publish (PyPI)
+  - `README.md` с инструкциями по настройке secrets и релизу
+
+### Промпт 3
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "Теперь объясни что ты реализовал"
+**Результат:** Добавлены подробные комментарии к каждой секции CI.yml и release.yml (триггеры, permissions, jobs, steps, matrix, условия if)
+
+### Промпт 4
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "можно на арч заменить если да то как?"
+**Результат:** Заменён job `test` на Arch Linux через контейнер (`container: archlinux:latest` + pacman для установки python/rust/cargo). Для wheel-сборки Arch оставлен как ubuntu/windows/macos, т.к. GitHub не имеет готовых Arch-раннеров.
+
+### Промпт 5
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "Так давай продолжим нашу разработку, пока меня все устраивает"
+**Результат:** Добавлен `lint.yml` — job `actionlint` (валидация GitHub Actions синтаксиса) и `yamllint` (валидация YAML). Добавлен `.yamllint` конфиг. Триггер: только при изменениях в `.github/workflows/`.
+
+### Промпт 6
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "Добавь комментарии в код"
+**Результат:** Добавлены подробные комментарии в `lint.yml` (назначение actionlint/yamllint, что проверяют) и `.yamllint` (правила конфигурации yamllint). Объяснено различие между actionlint (специфика GitHub Actions) и yamllint (общий YAML).
+
+### Промпт 7
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "Давай пока проверим наш результат и тесты. Если все удачно: реализуй баджейки"
+**Результат:** Добавлены промпты 5-6 в промтлог. yamllint выявил trailing spaces — исправлены. Обновлён `.yamllint` (отключены `document-start` и `truthy` warnings). Добавлены баджейки в README: CI, Lint, Release, PyPI version.
+
+### Промпт 8
+**Инструмент:** Cursor AI Agent (GPT-5.2)
+**Промпт:** "Кстати а где наш Rust-модуль? давай реализуем новый минимальный модуль"
+**Результат:** Создан минимальный Rust-модуль в `hard/cicd_rust_ci_cd/`: `pyproject.toml` (maturin build-system), `Cargo.toml` (pyo3 0.22), `src/lib.rs` (функции `add`, `multiply`, `greet`), `python/fastmath/__init__.py`, `python/tests/test_fastmath.py`. Собран с `PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1` (Arch Python 3.14). pytest проходит: 3 теста.
 

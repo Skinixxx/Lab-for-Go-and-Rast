@@ -1,0 +1,69 @@
+# ============================================
+# Lint Workflow — проверка синтаксиса workflow-файлов
+# ============================================
+
+# Название workflow
+name: Lint Workflows
+
+# ============================================
+# Триггеры — запуск только при изменениях workflow-файлов
+# ============================================
+on:
+  # При пуше в основные ветки, если изменились workflow-файлы
+  push:
+    paths:
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
+  # При PR, если изменились workflow-файлы
+  pull_request:
+    paths:
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
+  # Ручной запуск
+  workflow_dispatch:
+
+# ============================================
+# Задачи (jobs)
+# ============================================
+jobs:
+  # --------------------------------------------
+  # Job 1: Проверка синтаксиса GitHub Actions
+  # --------------------------------------------
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      # Клонирование репозитория
+      - uses: actions/checkout@v6
+
+      # Скачивание и установка actionlint
+      # actionlint — линтер для GitHub Actions workflow-файлов
+      # Проверяет: синтаксис, существование action'ов, переменные, secrets
+      - name: Download actionlint
+        run: |
+          bash <(curl -s https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          actionlint -version
+
+      # Запуск actionlint
+      # Находит ошибки: несуществующие actions, опечатки в переменных,
+      # неправильный синтаксис step'ов, jobs, uses
+      - name: Run actionlint
+        run: actionlint
+
+  # --------------------------------------------
+  # Job 2: Проверка YAML-синтаксиса
+  # --------------------------------------------
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      # Клонирование репозитория
+      - uses: actions/checkout@v6
+
+      # Установка yamllint через pip
+      # yamllint — линтер для YAML-файлов
+      # Проверяет: отступы, переносы строк, длину строк, синтаксис
+      - name: Install yamllint
+        run: pip install yamllint
+
+      # Запуск yamllint на директорию workflow'ов
+      - name: Run yamllint
+        run: yamllint .github/workflows/
