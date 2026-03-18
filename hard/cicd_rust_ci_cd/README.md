@@ -1,8 +1,8 @@
 # CI/CD для Rust-модуля с публикацией на PyPI
 
-[![CI](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/CI.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/CI.yml)
-[![Lint](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/lint.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/lint.yml)
-[![Release](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/release.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/release.yml)
+[![CI](https://github.com/Skinixxx/Lab-for-Go-and-Rast/actions/workflows/CI.yml/badge.svg)](https://github.com/Skinixxx/Lab-for-Go-and-Rast/actions/workflows/CI.yml)
+[![Lint](https://github.com/Skinixxx/Lab-for-Go-and-Rast/actions/workflows/lint.yml/badge.svg)](https://github.com/Skinixxx/Lab-for-Go-and-Rast/actions/workflows/lint.yml)
+[![Release](https://github.com/Skinixxx/Lab-for-Go-and-Rast/actions/workflows/release.yml/badge.svg)](https://github.com/Skinixxx/Lab-for-Go-and-Rast/actions/workflows/release.yml)
 [![PyPI version](https://img.shields.io/pypi/v/fastmath)](https://pypi.org/project/fastmath/)
 
 ## Структура
