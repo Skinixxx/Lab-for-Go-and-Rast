@@ -44,7 +44,7 @@ jobs:
 
       # Кэширование pip-пакетов
       - name: Cache pip packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           # Путь к pip-кэшу в Arch
           path: ~/.cache/pip
@@ -60,7 +60,7 @@ jobs:
 
       # Кэширование Rust-компиляции (target directory)
       - name: Cache cargo registry
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry/index
@@ -126,7 +126,7 @@ jobs:
 
       # Загрузка собранных wheel-файлов как артефактов
       - name: Upload wheels
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           # Уникальное имя артефакта для каждой платформы
           name: wheels-${{ matrix.os }}-${{ matrix.target }}
