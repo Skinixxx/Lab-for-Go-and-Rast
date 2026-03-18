@@ -1,0 +1,134 @@
+# ============================================
+# CI Workflow — тестирование и сборка wheels
+# ============================================
+
+# Название workflow (отображается в GitHub Actions)
+name: CI
+
+# ============================================
+# Триггеры — когда запускать workflow
+# ============================================
+on:
+  # При пуше в основные ветки
+  push:
+    branches: [main, master]
+  # При открытии/обновлении Pull Request
+  pull_request:
+  # Ручной запуск через GitHub UI
+  workflow_dispatch:
+
+# Права доступа для GitHub Token
+permissions:
+  # Только чтение репозитория (безопасность по умолчанию)
+  contents: read
+
+# ============================================
+# Задачи (jobs)
+# ============================================
+jobs:
+  # --------------------------------------------
+  # Job 1: Тестирование в Arch Linux
+  # --------------------------------------------
+  test:
+    runs-on: ubuntu-latest
+    # Запуск внутри Arch Linux контейнера
+    container: archlinux:latest
+    steps:
+      # Установка базовых зависимостей через pacman
+      - name: Install base dependencies
+        run: |
+          pacman -Sy --noconfirm python python-pip rust cargo
+
+      # Клонирование репозитория
+      - uses: actions/checkout@v6
+
+      # Кэширование pip-пакетов
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          # Путь к pip-кэшу в Arch
+          path: ~/.cache/pip
+          # Ключ зависит от зависимостях в pyproject.toml
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+          # Восстановить из любой версии с тем же Python/OS
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Установка maturin и pytest через pip
+      - name: Install maturin
+        run: pip install maturin pytest
+
+      # Кэширование Rust-компиляции (target directory)
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+          # Ключ зависит от lock-файла
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      # Сборка и установка модуля
+      - name: Build and install
+        run: maturin develop --release
+
+      # Запуск Python-тестов
+      - name: Run tests
+        run: pytest python/tests/ -v
+
+  # --------------------------------------------
+  # Job 2: Сборка wheels для разных платформ
+  # --------------------------------------------
+  build-wheels:
+    # Раннер зависит от matrix.os
+    runs-on: ${{ matrix.os }}
+    # Стратегия сборки
+    strategy:
+      # Не останавливать остальные при ошибке одного
+      fail-fast: false
+      # Определение матрицы платформ
+      matrix:
+        include:
+          # Linux x86_64 (amd64)
+          - os: ubuntu-latest
+            target: x86_64
+          # Linux ARM64 (aarch64)
+          - os: ubuntu-latest
+            target: aarch64
+          # Windows x64
+          - os: windows-latest
+            target: x64
+          # macOS Intel
+          - os: macos-latest
+            target: x86_64
+          # macOS Apple Silicon (M1/M2)
+          - os: macos-latest
+            target: aarch64
+    steps:
+      # Клонирование репозитория
+      - uses: actions/checkout@v6
+
+      # Сборка wheel через официальное действие PyO3
+      # sccache включен для ускорения повторных сборок
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          # Целевая платформа (x86_64, aarch64, x64 и т.д.)
+          target: ${{ matrix.target }}
+          # Аргументы: --release = оптимизированная сборка, --out dist = выходная папка
+          args: --release --out dist
+          # Включить sccache для ускорения повторных сборок
+          # sccache кэширует результаты компиляции Rust
+          sccache: "true"
+
+      # Загрузка собранных wheel-файлов как артефактов
+      - name: Upload wheels
+        uses: actions/upload-artifact@v6
+        with:
+          # Уникальное имя артефакта для каждой платформы
+          name: wheels-${{ matrix.os }}-${{ matrix.target }}
+          # Путь к папке с wheel-файлами
+          path: dist
