@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY python-client/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY python-client/ ./
+RUN python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/integration.proto
+
+CMD ["python", "client.py"]

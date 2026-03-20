@@ -1,0 +1,9 @@
+{
+  "name": "python-client",
+  "version": "1.0.0",
+  "dependencies": {
+    "requests": "^2.31.0",
+    "grpcio": "^1.60.0",
+    "grpcio-tools": "^1.60.0"
+  }
+}

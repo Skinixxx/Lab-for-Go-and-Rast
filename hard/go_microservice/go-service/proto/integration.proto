@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package integration;
+
+option go_package = "github.com/hard/go-service/proto";
+
+service Integrator {
+    rpc Integrate(IntegrationRequest) returns (IntegrationResponse);
+    rpc IntegrateStream(IntegrationRequest) returns (stream IntegrationResponse);
+}
+
+message IntegrationRequest {
+    string function = 1;
+    double lower_bound = 2;
+    double upper_bound = 3;
+    int64 partitions = 4;
+}
+
+message IntegrationResponse {
+    double result = 1;
+    double error_estimate = 2;
+    int64 partitions_used = 3;
+}
