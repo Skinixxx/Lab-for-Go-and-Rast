@@ -35,11 +35,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Клонирование репозитория
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Установка Python 3.12 (фиксируем версию чтобы избежать проблем с 3.14)
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -58,7 +58,7 @@ jobs:
 
       # Загрузка артефактов для следующих job'ов
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels
           path: hard/cicd_rust_ci_cd/dist
@@ -73,7 +73,7 @@ jobs:
     needs: build
     steps:
       # Скачивание артефактов из job 'build'
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: wheels
           path: dist
@@ -106,7 +106,7 @@ jobs:
       github.event.inputs.test_only != 'true'
     steps:
       # Скачивание артефактов
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: wheels
           path: dist
